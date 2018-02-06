@@ -54,23 +54,18 @@ uint32_t refco_setdiv(uint32_t n, uint32_t m) {
 //set ref clock output to desired frequency
 //fref_out <=freq_in / (2 * (N + M / 512))
 //output: N..M
-uint32_t refco_setfreq(uint32_t fref_in, uint32_t fref_out) {
-	uint32_t n, m;
-	if (fref_in <= (fref_out * 2)) {		//invalid input
-		n = 1;
-		m = 0;
-	} else {								//valid input
-		//fref_in = fref_in / 2;
-		n = fref_in / fref_out / 2;
-		//m = fref_in - n * fref_out;			//find the residual
-		m = 256 * fref_in / fref_out - 512 * n;
-	}
-	if (n==0) n=1;							//minimum value of n is 1
-	refco_setdiv(n, m);
-	//refco_settrim(m);
-	return (n << 8) | m;
+uint32_t refco_calc(uint32_t f_in, uint32_t f_out, uint32_t *N) {
+	uint32_t tmp;
+	//Output clock f_out = f_in / (2 * (N + M / 512))
+	//N = f_in / f_out / 2;
+	*N = f_in / f_out / 2;
+	//tmp = f_out * 2 * M / 512 = f_in - f_out * 2 * N;
+	tmp = f_in - f_out * 2 * *N;
+	//M = tmp * 256 / f_out;
+	return tmp * 256 / f_out;
+	//return (f_in / 1000) * 256 / (f_out / 1000);
 }
-
+	
 //enable refco output
 //assume that dividers are set
 void refco_en(void) {

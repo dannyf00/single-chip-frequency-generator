@@ -38,7 +38,7 @@ uint32_t refco_setdiv(uint32_t n, uint32_t m);
 //set ref clock output to desired frequency
 //fref_out <=freq_in / (2 * (N + M / 512))
 //output: N..M
-uint32_t refco_setfreq(uint32_t fref_in, uint32_t fref_out);
+uint32_t refco_setfreq(uint32_t fref_in, uint32_t fref_out, uint32_t *N);
 
 //enable refco output
 //assume that dividers are set
